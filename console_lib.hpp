@@ -8,6 +8,9 @@
 #elif defined(__linux__)
 #include <sys/ioctl.h>
 #endif // Windows/Linux
+#include <sstream>
+#include <string>
+#include <vector>
 
 void get_terminal_size(int& width, int& height) {
 #if defined(_WIN32)
@@ -90,7 +93,7 @@ void get_terminal_size(int& width, int& height) {
 void apply(std::string c) {std::cout << c;}
 // Change color
 std::string make_color(int text_type = 0, int foreground = 1, int background = 1) {return std::string(ESC) + std::to_string(text_type) + ";" + std::to_string(foreground) + ";" + std::to_string(background) + "m";}
-void apply_color(int text_type = 0, int foreground = 0, int background = 0) {apply(make_color(text_type, foreground, background));}
+void apply_color(int text_type = 0, int foreground = 1, int background = 1) {apply(make_color(text_type, foreground, background));}
 std::string reset_color() {return make_color(0, 0, 0);}
 void apply_reset_color() {apply(reset_color());}
 // > RGB colors
@@ -115,3 +118,5 @@ void print_right_bound_ranged(std::string text, int range_width) {print_X(range_
 void print_center_bound(std::string text) {auto [width, height] = window_size();print_X(width / 2 - text.size(), " ");std::cout << text << std::endl;}
 void print_center_bound_ranged(std::string text, int range_width) {print_X(range_width / 2 - text.size(), " ");std::cout << text << std::endl;}
 void print_as_header(std::string text, int range) {int size = (range - (text.size() + 2)) / 2;print_X(size, "-");std::cout << " " << text << " ";print_X(size, "-");std::cout << std::endl;}
+std::vector<std::string> split_string_by_newline(const std::string& str) {auto result = std::vector<std::string>{};auto ss = std::stringstream{str};for (std::string line; std::getline(ss, line, '\n');) result.push_back(line);return result;}
+void lined_f(std::string text, void* func(std::string)) {for (std::string i : split_string_by_newline(text)) {func(i);}}
