@@ -1,6 +1,7 @@
 // A small console library I built in C++
 // Created by MOBSkuchen
 // Resource : https://gist.github.com/fnky/458719343aabd01cfb17a3a4f7296797
+#pragma once
 #if defined(_WIN32)
 #define WIN32_LEAN_AND_MEAN
 #define VC_EXTRALEAN
@@ -96,6 +97,14 @@ std::string make_color(int text_type = 0, int foreground = 1, int background = 1
 void apply_color(int text_type = 0, int foreground = 1, int background = 1) {apply(make_color(text_type, foreground, background));}
 std::string reset_color() {return make_color(0, 0, 0);}
 void apply_reset_color() {apply(reset_color());}
+// As stuff
+std::string as_style(std::string string, const std::string& style, const std::string& reset) {return ESC + style + string + ESC + reset;}
+std::string as_bold(std::string string) {return as_style(string, "1m", "22m");}
+std::string as_dim(std::string string) {return as_style(string, "2m", "22m");}
+std::string as_underline(std::string string) {return as_style(string, "4m", "24m");}
+std::string as_blinking(std::string string) {return as_style(string, "5m", "25m");}
+std::string as_italic(std::string string) {return as_style(string, "3m", "23m");}
+std::string as(std::string text, int text_type = 0, int foreground = 1, int background = 1) {return make_color(text_type, foreground, background) + text + reset_color();}
 // > RGB colors
 std::string rgb_color(bool foreground, int r, int g, int b) {return std::string(ESC) + (foreground ? "38" : "48") + ";2;" + std::to_string(r) + ";" + std::to_string(g) + ";" + std::to_string(b) + "m";}
 void apply_rgb_color(bool foreground, int r, int g, int b) {apply(rgb_color(foreground, r, g, b));}
